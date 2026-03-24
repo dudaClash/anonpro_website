@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AnonPro | Anonimização segura de PDF, SPED e XML</title>
+  <meta name="description" content="AnonPro é uma solução de anonimização de arquivos PDF, SPED e XML, voltada à proteção de dados sensíveis, conformidade com a LGPD e compartilhamento seguro de documentos corporativos e fiscais." />
+  <style>
+    :root {
+      --bg: #0b1220;
+      --bg-soft: #121a2b;
+      --card: #172033;
+      --line: #26324d;
+      --text: #eef2ff;
+      --muted: #b3bfd9;
+      --accent: #c8a45d;
+      --accent-2: #f1d18a;
+      --ok: #92d7a7;
+      --shadow: 0 20px 40px rgba(0,0,0,.25);
+      --radius: 20px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      background: linear-gradient(180deg, #09101c 0%, #0d1525 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11,18,32,.82);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: .4px;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 30% 30%, var(--accent-2), var(--accent));
+      display: grid;
+      place-items: center;
+      color: #111827;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+    }
+
+    .menu {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .menu a:hover { color: var(--text); }
+
+    .hero {
+      padding: 88px 0 56px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border: 1px solid rgba(200,164,93,.35);
+      border-radius: 999px;
+      color: var(--accent-2);
+      background: rgba(200,164,93,.08);
+      font-size: .88rem;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4.3rem);
+      line-height: 1.05;
+      margin: 0 0 18px;
+      letter-spacing: -1.6px;
+    }
+
+    .hero p {
+      font-size: 1.08rem;
+      color: var(--muted);
+      max-width: 760px;
+      margin: 0 0 28px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .btn {
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      transition: .2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #111827;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-primary:hover { transform: translateY(-1px); }
+
+    .btn-secondary {
+      border-color: rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .metric {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+
+    .hero-card {
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -80px -80px auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,164,93,.22), transparent 70%);
+    }
+
+    .panel {
+      background: var(--bg-soft);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+
+    .panel h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    section {
+      padding: 34px 0;
+    }
+
+    .section-title {
+      max-width: 760px;
+      margin-bottom: 26px;
+    }
+
+    .section-title h2 {
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      margin: 0 0 10px;
+      letter-spacing: -1px;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h3 { margin: 0 0 10px; }
+    .card p { margin: 0 0 14px; color: var(--muted); }
+
+    .list {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .list li {
+      display: flex;
+      gap: 10px;
+      color: #dbe4fb;
+    }
+
+    .check {
+      color: var(--ok);
+      font-weight: 900;
+      margin-top: 1px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .strip {
+      border: 1px solid rgba(200,164,93,.22);
+      background: rgba(200,164,93,.06);
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .pricing {
+      display: grid;
+      grid-template-columns: .95fr 1.05fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .price-tag {
+      font-size: 2.5rem;
+      font-weight: 900;
+      line-height: 1;
+      margin: 8px 0 10px;
+      color: var(--accent-2);
+    }
+
+    .muted { color: var(--muted); }
+
+    .cta {
+      padding: 56px 0 80px;
+    }
+
+    .cta-box {
+      background: linear-gradient(135deg, rgba(200,164,93,.12), rgba(255,255,255,.04));
+      border: 1px solid rgba(200,164,93,.22);
+      border-radius: 26px;
+      padding: 34px;
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    footer {
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding: 24px 0 40px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .small {
+      font-size: .9rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .pricing,
+      .cta-box,
+      .grid-3,
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .menu { display: none; }
+      .hero { padding-top: 64px; }
+      .btn { width: 100%; }
+      .actions { flex-direction: column; }
+      .card, .strip, .hero-card, .cta-box { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a href="#top" class="brand">
+        <div class="logo">A</div>
+        <span>AnonPro</span>
+      </a>
+      <nav class="menu">
+        <a href="#modulos">Módulos</a>
+        <a href="#beneficios">Benefícios</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#planos">Planos</a>
+        <a href="#contato">Contato</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Proteção de dados • LGPD • Compartilhamento seguro</div>
+          <h1>Anonimização profissional de <span style="color: var(--accent-2);">PDF, SPED e XML</span> em uma única plataforma.</h1>
+          <p>
+            O AnonPro foi concebido para escritórios, auditorias, departamentos fiscais e ambientes corporativos que necessitam compartilhar documentos com segurança, preservando sigilo, integridade operacional e aderência às exigências de proteção de dados.
+          </p>
+          <div class="actions">
+            <a class="btn btn-primary" href="#contato">Solicitar demonstração</a>
+            <a class="btn btn-secondary" href="#planos">Ver estrutura comercial</a>
+          </div>
+          <div class="metrics">
+            <div class="metric">
+              <strong>3 módulos</strong>
+              <span class="small">PDF, SPED e XML integrados</span>
+            </div>
+            <div class="metric">
+              <strong>LGPD</strong>
+              <span class="small">Foco em dados sensíveis e sigilo documental</span>
+            </div>
+            <div class="metric">
+              <strong>Uso corporativo</strong>
+              <span class="small">Fluxo adequado para escritórios e empresas</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <div class="panel">
+            <h3>AnonPro PDF</h3>
+            <p>Redação e ocultação de dados sensíveis em documentos PDF, inclusive com apoio de OCR quando necessário.</p>
+          </div>
+          <div class="panel">
+            <h3>AnonPro SPED</h3>
+            <p>Tratamento de arquivos fiscais com foco em campos sensíveis, textos espúrios e compartilhamento técnico controlado.</p>
+          </div>
+          <div class="panel" style="margin-bottom:0;">
+            <h3>AnonPro XML</h3>
+            <p>Anonimização estruturada de XML fiscal, preservando consistência operacional e utilidade analítica do arquivo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="modulos">
+      <div class="container">
+        <div class="section-title">
+          <h2>Módulos que compõem o ecossistema AnonPro</h2>
+          <p>Arquitetura voltada à segregação funcional por tipo documental, com experiência centralizada para o usuário final.</p>
+        </div>
+        <div class="grid-3">
+          <article class="card">
+            <h3>PDF</h3>
+            <p>Voltado à supressão, ocultação e anonimização de conteúdo textual e visual em PDFs.</p>
+            <ul class="list">
+              <li><span class="check">✔</span><span>Reconhecimento de padrões sensíveis</span></li>
+              <li><span class="check">✔</span><span>Suporte a documentos digitalizados</span></li>
+              <li><span class="check">✔</span><span>Tratamento de textos e imagens</span></li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>SPED</h3>
+            <p>Preparado para anonimização de arquivos fiscais com preservação da estrutura técnica do leiaute.</p>
+            <ul class="list">
+              <li><span class="check">✔</span><span>Identificação de campos sensíveis</span></li>
+              <li><span class="check">✔</span><span>Inclusão de textos adicionais para ocultação</span></li>
+              <li><span class="check">✔</span><span>Uso seguro em rotinas de compartilhamento</span></li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>XML</h3>
+            <p>Desenvolvido para NF-e, NFC-e e outros XMLs estruturados, com foco em privacidade e interoperabilidade.</p>
+            <ul class="list">
+              <li><span class="check">✔</span><span>Processamento modular</span></li>
+              <li><span class="check">✔</span><span>Preservação da lógica do documento</span></li>
+              <li><span class="check">✔</span><span>Adequado a cenários corporativos</span></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="beneficios">
+      <div class="container">
+        <div class="section-title">
+          <h2>Benefícios jurídicos, técnicos e operacionais</h2>
+          <p>Posicionamento orientado à mitigação de risco, governança documental e profissionalização do intercâmbio de arquivos.</p>
+        </div>
+        <div class="feature-grid">
+          <div class="card">
+            <h3>Redução de exposição indevida</h3>
+            <p>Mitiga o compartilhamento de informações estratégicas, fiscais, cadastrais e pessoais em documentos que circulam entre setores, clientes, parceiros e terceiros.</p>
+          </div>
+          <div class="card">
+            <h3>Aderência à LGPD</h3>
+            <p>Favorece políticas internas de minimização de dados, necessidade, adequação e proteção de informações sensíveis.</p>
+          </div>
+          <div class="card">
+            <h3>Padronização interna</h3>
+            <p>Permite institucionalizar um fluxo uniforme para tratamento de documentos antes do envio externo ou do uso em apresentações e treinamentos.</p>
+          </div>
+          <div class="card">
+            <h3>Aplicação multissetorial</h3>
+            <p>Útil para auditorias, escritórios contábeis, jurídico, compliance, fiscal, controladoria e departamentos administrativos.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="como-funciona">
+      <div class="container">
+        <div class="strip">
+          <div class="section-title" style="margin-bottom:18px;">
+            <h2>Como funciona</h2>
+            <p>Fluxo comercial simples, com comunicação objetiva do valor entregue ao cliente final.</p>
+          </div>
+          <div class="grid-3">
+            <div>
+              <h3>1. Recebimento do arquivo</h3>
+              <p class="muted">O usuário seleciona o documento ou lote que deseja tratar dentro do módulo correspondente.</p>
+            </div>
+            <div>
+              <h3>2. Processamento e anonimização</h3>
+              <p class="muted">A plataforma aplica regras automáticas e parâmetros adicionais definidos pelo próprio usuário.</p>
+            </div>
+            <div>
+              <h3>3. Saída segura</h3>
+              <p class="muted">O documento é disponibilizado em versão adequada ao compartilhamento externo, reduzindo o risco informacional.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="planos">
+      <div class="container pricing">
+        <div class="card">
+          <div class="section-title" style="margin-bottom:12px;">
+            <h2>Estrutura comercial sugerida</h2>
+            <p>Bloco editável para posterior adequação ao modelo de licenciamento, ativação e suporte do AnonPro.</p>
+          </div>
+          <p class="small">Modelo inicial sugerido para página comercial:</p>
+          <div class="price-tag">Sob consulta</div>
+          <p class="muted">Licenciamento corporativo, ativação individual, planos por módulo ou suíte completa, suporte técnico e atualizações programadas.</p>
+          <div class="actions" style="margin-top:18px; margin-bottom:0;">
+            <a class="btn btn-primary" href="#contato">Quero falar com a equipe</a>
+          </div>
+        </div>
+        <div class="card">
+          <h3>O que esta seção pode vender</h3>
+          <ul class="list">
+            <li><span class="check">✔</span><span>Licença por estação de trabalho</span></li>
+            <li><span class="check">✔</span><span>Plano por módulo isolado</span></li>
+            <li><span class="check">✔</span><span>Pacote completo AnonPro</span></li>
+            <li><span class="check">✔</span><span>Atualizações e manutenção</span></li>
+            <li><span class="check">✔</span><span>Demonstração comercial agendada</span></li>
+          </ul>
+          <p class="small" style="margin-top:16px;">Observação: esta área já está preparada para receber tabela de preços, FAQ comercial, formulário e política de licenciamento.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta" id="contato">
+      <div class="container">
+        <div class="cta-box">
+          <div>
+            <h2 style="margin:0 0 10px; font-size: clamp(1.9rem, 3vw, 2.9rem); letter-spacing:-1px;">Pronto para transformar o AnonPro em presença digital comercial?</h2>
+            <p class="muted" style="margin:0;">Esta landing page já pode ser adaptada para formulário, WhatsApp, prova social, área de demonstração, captação de leads e publicação em domínio próprio.</p>
+          </div>
+          <div>
+            <div class="panel">
+              <h3>Contato comercial</h3>
+              <p>Substitua este bloco por e-mail, WhatsApp, formulário ou botão de demonstração.</p>
+            </div>
+            <div class="panel" style="margin-bottom:0;">
+              <h3>Domínio sugerido</h3>
+              <p>anonpro.com.br, useanonpro.com.br ou domínio institucional do projeto principal.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <strong>AnonPro</strong><br />
+      Solução de anonimização documental para ambientes fiscais, contábeis, jurídicos e corporativos.<br />
+      <span class="small">Landing page base criada para evolução comercial e publicação em hospedagem web.</span>
+    </div>
+  </footer>
+</body>
+</html>
